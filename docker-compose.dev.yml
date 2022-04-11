@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  vote:
+    build:
+      context: ./vote
+      dockerfile: Dockerfile.dev
+      # https://stackoverflow.com/a/52430444
+      args:
+        - NODE_ENV=development
+        - WEBSITE_PORT=4000
+    volumes:
+      - "./vote:/app"
+    ports:
+      # must be same as WEBSITE_PORT= arg above
+      - "4000:4000"
+      - "35729:35729"
+    networks:
+      - backend
+    depends_on:
+      - redis
+    
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+
+networks:
+  backend: {}
